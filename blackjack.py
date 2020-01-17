@@ -28,7 +28,7 @@ class Deck(object):
 
     def __init__(self):
         """Calls populate method and shuffles deck."""
-        print("Here is the deck")
+        print("Card deck opened.")
         self.cards = []
         self.populate()
         self.shuffle()
@@ -49,10 +49,71 @@ class Deck(object):
     def shuffle(self):
         """Shuffles the cards in this deck."""
         random.shuffle(self.cards)
+        print('Dealer shuffled deck.\n')
 
 
 class Player():
-    pass
+
+    #chips = 0
+    #bet = 0
+    #game_on = True
+
+    def __init__(self):
+        """Tracks user bet binput and chips"""
+        self.game_on = True
+        self.chips = 0
+        self.bet = 0
+        self.sum = 0
+
+    def playerBuysChips(self):
+        if self.game_on is True:
+            while True:
+                try:
+                    self.chips = int(input('Player, how many chips would you like to buy? '))
+                except ValueError:
+                    print("Invalid entry. Try again")
+                    continue
+                else:
+                    if self.chips == 0:
+                        print("Chip(s) purchased must be greater than 0.  Try again.")
+                        continue
+                break
+        return self.chips
+
+    def playerPlacesBet(self):
+        #successful chips purchased - ready to place bet
+        while not ((self.chips <= 0) & (self.game_on is True)):
+                while True:
+                    try:
+                        self.bet = int(input('Player, what\'s your bet? '))
+                    except ValueError:
+                        print("Invalid entry. Try again")
+                        continue
+                    else:
+                        if self.bet == 0:
+                            print("Bet must be greater than 0.  Try again.")
+                            continue
+                    break
+                    #successful bet entered - make sure there are chips
+                self.sum = self.chips - self.bet
+                if self.sum < 0:
+                    print('Invalid bet. Please try again.')
+                    self.sum == 0
+                else:
+                    self.chips = self.sum
+                    print(f'You bet {self.bet} with {self.chips} chip(s) remaining.')
+                    print('Let\'s play.')
+                    self.bet = 0
+        return
+
+    def replay(self):
+        self.replayGame = input('Do you want to play again? Enter Yes or No: ').lower().startswith('y')
+        if self.replayGame == 'y':
+            Player.playerBuysChips().game_on == True
+            Player.playerBuysChips(self)
+        else:
+            return
+
 
 
 class Dealer():
@@ -64,33 +125,31 @@ if __name__ == "__main__":
 
     print("Welcome to BlackJack!\n")
 
-    #print entire deck
-    print("Calling Deck with Cards\n")
-    deck = Deck()
-    print(deck)
+    my_deck = Deck()
+    my_player = Player()
 
-    #Begin game
-    #print player's first two cards face up
-    #remove these from the deck
-    #print dealer first card, save dealer second card not display
-    #remove these cards from the deck
+    #print(my_deck)
+    my_player.playerBuysChips()
+    my_player.playerPlacesBet()
+    my_player.replay() #not quite working
+    print('Game over')
 
-    #ask player if stay or hit
 
-    #stay
-    #if player stays
-    # turn over dealer's second card and count totals
-    # count player's totals
-    #whoever is closest to 21 wins
-    #if someone over - they lose
-
-    #hit
-    #if player says hit
-    # add card to player - remove card from deck
-    # total card points
-    # if ace - player chooses 1 or 11 points
-    # if over 21 players loses
-    #continue until player says stay
+'''
+done 1.Create a deck of 52 cards
+done 2.Shuffle the deck
+done 3.Ask the Player for their bet
+done 4.Make sure that the Player's bet does not exceed their available chips
+5.Deal two cards to the Dealer and two cards to the Player
+6.Show only one of the Dealer's cards, the other remains hidden
+7.Show both of the Player's cards
+8.Ask the Player if they wish to Hit, and take another card
+9.If the Player's hand doesn't Bust (go over 21), ask if they'd like to Hit again.
+10.If a Player Stands, play the Dealer's hand. The dealer will always
+11.Hit until the Dealer's value meets or exceeds 17
+12.Determine the winner and adjust the Player's chips accordingly
+13.Ask the Player if they'd like to play again
+'''
 
 
 
