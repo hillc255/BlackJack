@@ -12,7 +12,7 @@ Description:  Original code in PyCharm IDE
 class Card(object):
 
     suits = ["♠", "♣", "♥", "♦"]
-    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "ace", "jack", "queen", "king"]
+    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "A", "J", "Q", "K"]
     playerHand = []
     dealerHand = []
 
