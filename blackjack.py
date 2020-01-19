@@ -131,9 +131,9 @@ class Dealer(object):
 
     def __str__(self):
         '''Card removed from deck'''
-        print('Player\'s hand')
+        print('Used deck')
         res2 = []
-        for card2 in self.playerCard:
+        for card2 in self.usedDeck:
             res2.append(str(card2))
         return ", ".join(res2)
 
@@ -145,9 +145,12 @@ class Dealer(object):
         return self.item, self.usedDeck
 
     def playerHand(self):
-        print("Add card to player\'s hand")
+        print("Add card to player\'s hand and print")
         self.playerCard.append(self.item)
-
+        pc = []
+        for pcard in self.playerCard:
+            pc.append(str(pcard))
+        print( ", ".join(pc))
 
 
 
