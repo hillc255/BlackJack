@@ -1,4 +1,5 @@
 import random
+import string
 
 '''
 Title:        BlackJack Game
@@ -13,8 +14,6 @@ class Card(object):
 
     suits = ["♠", "♣", "♥", "♦"]
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "A", "J", "Q", "K"]
-    playerHand = []
-    dealerHand = []
 
     def __init__(self, suits, ranks):
         """Sets up individual card"""
@@ -113,7 +112,7 @@ class Player(object):
     def replay(self):
         self.replayGame = input('Do you want to play again? Enter Yes or No: ').lower().startswith('y')
         if self.replayGame == 'y':
-            Player.playerBuysChips().game_on == True
+            Player.playerBuysChips().game_on = True
             Player.playerBuysChips(self)
         else:
             return
@@ -138,6 +137,16 @@ class Dealer(object):
             res2.append(str(card2))
         return ", ".join(res2)
 
+    def cardCount(self, playerCards):
+        #remove the suits from the list
+        temp = []
+        self.temp = self.playerCards
+        print('\nStripped out suits')
+        temp2 = []
+        for i in self.temp:
+             temp2.append((str(i)[ :-1]))
+        print(", ".join(temp2))
+        #sum the card count
 
     def dealCard(self, usedDeck):
         self.item = self.usedDeck.pop(0)
@@ -200,6 +209,21 @@ if __name__ == "__main__":
 
     #Remove a third card from the deck with pop and print it
     my_dealer.dealCard(my_dealer.usedDeck)
+    #Add third item removed from deck to player's hand and print player's hand
+    my_dealer.playerHand()
+    #print remaining cards in deck
+    print(my_dealer)
+
+    #Remove a fourth card from the deck with pop and print it
+    my_dealer.dealCard(my_dealer.usedDeck)
+    #Add fourth removed from deck to player's hand and print player's hand
+    my_dealer.playerHand()
+    #print remaining cards in deck
+    print(my_dealer)
+
+    '''
+    #Remove a third card from the deck with pop and print it
+    my_dealer.dealCard(my_dealer.usedDeck)
     #Add third item removed from deck to dealer's hand and print dealer's hand
     my_dealer.dealerHand()
     #print remaining cards in deck
@@ -211,6 +235,11 @@ if __name__ == "__main__":
     my_dealer.dealerHand()
     #print remaining cards in deck
     print(my_dealer)
+     
+    '''
+
+    #strip suits from player's or dealer's hand
+    my_dealer.cardCount(my_dealer.playerCards)
 
     print('Game over')
 
@@ -230,8 +259,3 @@ done 4.Make sure that the Player's bet does not exceed their available chips
 12.Determine the winner and adjust the Player's chips accordingly
 13.Ask the Player if they'd like to play again
 '''
-
-
-
-
-
