@@ -123,7 +123,8 @@ class Player(object):
 class Dealer(object):
 
     def __init__(self,cards):
-        self.playerCard = []
+        self.playerCards = []
+        self.dealerCards = []
         self.usedDeck = []
         self.usedDeck = cards
         '''Dealer deals a hand and counts total'''
@@ -140,17 +141,26 @@ class Dealer(object):
 
     def dealCard(self, usedDeck):
         self.item = self.usedDeck.pop(0)
-        print('Single card removed from deck')
+        print('\nSingle card removed from deck')
         print(str(self.item))
         return self.item, self.usedDeck
 
+
     def playerHand(self):
-        print("Add card to player\'s hand and print")
-        self.playerCard.append(self.item)
+        print("Player\'s hand: Add card and print")
+        self.playerCards.append(self.item)
         pc = []
-        for pcard in self.playerCard:
+        for pcard in self.playerCards:
             pc.append(str(pcard))
         print( ", ".join(pc))
+
+    def dealerHand(self):
+        print("Dealer\'s hand: Add card and print")
+        self.dealerCards.append(self.item)
+        dc = []
+        for dcard in self.dealerCards:
+            dc.append(str(dcard))
+        print(", ".join(dc))
 
 
 
@@ -176,24 +186,31 @@ if __name__ == "__main__":
 
     #Remove a card from the deck with pop and print it
     my_dealer.dealCard(my_deck.cards)
-
-    #Add item removed from deck to player's hand
+    #Add item removed from deck to player's hand and print player's hand
     my_dealer.playerHand()
-
-    #print player's complete hand
+    #print remaining cards in deck
     print(my_dealer)
 
     #Remove a second card from the deck with pop and print it
     my_dealer.dealCard(my_dealer.usedDeck)
-
-    #Add second item removed from deck to player's hand
+    #Add second item removed from deck to player's hand and print player's hand
     my_dealer.playerHand()
-
-    #print player's complete hand
+    #print remaining cards in deck
     print(my_dealer)
 
-    #print the card
-    #add the card to list for player
+    #Remove a third card from the deck with pop and print it
+    my_dealer.dealCard(my_dealer.usedDeck)
+    #Add third item removed from deck to dealer's hand and print dealer's hand
+    my_dealer.dealerHand()
+    #print remaining cards in deck
+    print(my_dealer)
+
+    #Remove a fourth card from the deck with pop and print it
+    my_dealer.dealCard(my_dealer.usedDeck)
+    #Add fourth item removed from deck to dealer's hand and print dealer's hand
+    my_dealer.dealerHand()
+    #print remaining cards in deck
+    print(my_dealer)
 
     print('Game over')
 
