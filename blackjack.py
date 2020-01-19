@@ -13,6 +13,8 @@ class Card(object):
 
     suits = ["♠", "♣", "♥", "♦"]
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "ace", "jack", "queen", "king"]
+    playerHand = []
+    dealerHand = []
 
     def __init__(self, suits, ranks):
         """Sets up individual card"""
@@ -21,7 +23,7 @@ class Card(object):
 
     def __str__(self):
         """Prints the individual card"""
-        return self.suits + " " + self.ranks
+        return self.suits + self.ranks
 
 
 class Deck(object):
@@ -30,29 +32,29 @@ class Deck(object):
         """Calls populate method and shuffles deck."""
         print("Card deck opened.")
         self.cards = []
-        self.populate()
-        self.shuffle()
 
     def populate(self):
         """Populates the deck with cards"""
         for rank in Card.ranks:
             for suit in Card.suits:
                 self.cards.append(Card(rank,suit))
+        print('Dealer populated deck.')
 
     def __str__(self):
         """Converts location to string value"""
+        print('Deck of shuffled cards.')
         res = []
         for card in self.cards:
             res.append(str(card))
-        return "\n".join(res)
+        return ", ".join(res)
 
     def shuffle(self):
         """Shuffles the cards in this deck."""
         random.shuffle(self.cards)
-        print('Dealer shuffled deck.\n')
+        print('Dealer shuffled deck.')
 
 
-class Player():
+class Player(object):
 
     #chips = 0
     #bet = 0
@@ -104,6 +106,8 @@ class Player():
                     print(f'You bet {self.bet} with {self.chips} chip(s) remaining.')
                     print('Let\'s play.')
                     self.bet = 0
+                    self.game_on = False
+                    break
         return
 
     def replay(self):
@@ -116,8 +120,34 @@ class Player():
 
 
 
-class Dealer():
-    pass
+class Dealer(object):
+
+    def __init__(self,cards):
+        self.playerCard = []
+        self.usedDeck = []
+        self.usedDeck = cards
+        '''Dealer deals a hand and counts total'''
+
+
+    def __str__(self):
+        '''Card removed from deck'''
+        print('Player\'s hand')
+        res2 = []
+        for card2 in self.playerCard:
+            res2.append(str(card2))
+        return ", ".join(res2)
+
+
+    def dealCard(self, usedDeck):
+        self.item = self.usedDeck.pop(0)
+        print('Single card removed from deck')
+        print(str(self.item))
+        return self.item, self.usedDeck
+
+    def playerHand(self):
+        print("Add card to player\'s hand")
+        self.playerCard.append(self.item)
+
 
 
 
@@ -125,13 +155,43 @@ if __name__ == "__main__":
 
     print("Welcome to BlackJack!\n")
 
+    #Objects being used
     my_deck = Deck()
     my_player = Player()
+    my_dealer = Dealer(my_deck.cards)
 
-    #print(my_deck)
-    my_player.playerBuysChips()
-    my_player.playerPlacesBet()
-    my_player.replay() #not quite working
+    #Player buys chips and places bet
+    #my_player.playerBuysChips()
+    #my_player.playerPlacesBet()
+
+    #Preparing deck
+    my_deck.populate()
+    my_deck.shuffle()
+    print(my_deck)
+
+    # my_player.replay() #not quite working
+
+    #Remove a card from the deck with pop and print it
+    my_dealer.dealCard(my_deck.cards)
+
+    #Add item removed from deck to player's hand
+    my_dealer.playerHand()
+
+    #print player's complete hand
+    print(my_dealer)
+
+    #Remove a second card from the deck with pop and print it
+    my_dealer.dealCard(my_dealer.usedDeck)
+
+    #Add second item removed from deck to player's hand
+    my_dealer.playerHand()
+
+    #print player's complete hand
+    print(my_dealer)
+
+    #print the card
+    #add the card to list for player
+
     print('Game over')
 
 
