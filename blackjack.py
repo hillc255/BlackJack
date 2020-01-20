@@ -122,12 +122,11 @@ class Player(object):
 class Dealer(object):
 
     def __init__(self,cards):
+        '''Dealer deals a hand and counts total'''
         self.playerCards = []
         self.dealerCards = []
         self.usedDeck = []
         self.usedDeck = cards
-        '''Dealer deals a hand and counts total'''
-
 
     def __str__(self):
         '''Card removed from deck'''
@@ -137,23 +136,35 @@ class Dealer(object):
             res2.append(str(card2))
         return ", ".join(res2)
 
-    def cardCount(self, playerCards):
-        #remove the suits from the list
+    def cardRemoveSuit(self, playerCards):
+        '''Remove the suits from the list'''
         temp = []
         self.temp = self.playerCards
         print('\nStripped out suits')
         temp2 = []
         for i in self.temp:
-             temp2.append((str(i)[ :-1]))
+            temp2.append((str(i)[ :-1]))
         print(", ".join(temp2))
-        #sum the card count
+        #return temp2
+
+        print('\nReplace J,Q,K with 10')
+    '''
+   # def cardCount(self, temp2):
+        #Replace JQK with 10
+        temp3 = []
+        temp3 = temp2
+        temp4 = []
+        for j in temp3:
+            if j in ['J','Q','K']:
+                 temp4.append([j.replace(j, '10') for j in temp3[j]])
+        print(", ".join(temp4))
+    '''
 
     def dealCard(self, usedDeck):
         self.item = self.usedDeck.pop(0)
-        print('\nSingle card removed from deck')
+        print('Single card removed from deck')
         print(str(self.item))
         return self.item, self.usedDeck
-
 
     def playerHand(self):
         print("Player\'s hand: Add card and print")
@@ -171,6 +182,28 @@ class Dealer(object):
             dc.append(str(dcard))
         print(", ".join(dc))
 
+    def setUpGame(self):
+        print("\nDealer deals self 2 cards and displays 1")
+        self.dealCard(self.usedDeck)
+        self.dealerHand()
+        self.dealCard(self.usedDeck)
+        self.dealerHand()
+
+        for i in self.dealerCards[:1]:
+            print(f'Dealer Card 1: {str(i)}')
+        for j in self.dealerCards[1:2]:
+            print(f'Dealer Card 2: {str(j)}')
+        print('Dealer card C: Blank')
+
+        print("\nDealer deals player 2 cards and displays both")
+        self.dealCard(self.usedDeck)
+        self.playerHand()
+        self.dealCard(self.usedDeck)
+        self.playerHand()
+        for pcard in self.playerCards[:0]:
+            print(f'Player Card 1: {str(pcard)}')
+        for pcard2 in self.playerCards[:1]:
+            print(f'Player Card 2: {str(pcard2)}')
 
 
 if __name__ == "__main__":
@@ -191,8 +224,14 @@ if __name__ == "__main__":
     my_deck.shuffle()
     print(my_deck)
 
+    #Deal cards for dealer and player
+    my_dealer.setUpGame()
+
     # my_player.replay() #not quite working
 
+    #sum: print("The sum of values is {0}".format(sum(n)))
+
+    '''
     #Remove a card from the deck with pop and print it
     my_dealer.dealCard(my_deck.cards)
     #Add item removed from deck to player's hand and print player's hand
@@ -220,7 +259,7 @@ if __name__ == "__main__":
     my_dealer.playerHand()
     #print remaining cards in deck
     print(my_dealer)
-
+    '''
     '''
     #Remove a third card from the deck with pop and print it
     my_dealer.dealCard(my_dealer.usedDeck)
@@ -237,11 +276,13 @@ if __name__ == "__main__":
     print(my_dealer)
      
     '''
-
     #strip suits from player's or dealer's hand
-    my_dealer.cardCount(my_dealer.playerCards)
+    my_dealer.cardRemoveSuit(my_dealer.playerCards)
 
-    print('Game over')
+    #replace J,Q, K by 10
+    #my_dealer.cardCount(my_dealer.temp2)
+
+    print('\nGame over')
 
 
 '''
@@ -249,7 +290,7 @@ done 1.Create a deck of 52 cards
 done 2.Shuffle the deck
 done 3.Ask the Player for their bet
 done 4.Make sure that the Player's bet does not exceed their available chips
-5.Deal two cards to the Dealer and two cards to the Player
+done 5.Deal two cards to the Dealer and two cards to the Player
 6.Show only one of the Dealer's cards, the other remains hidden
 7.Show both of the Player's cards
 8.Ask the Player if they wish to Hit, and take another card
