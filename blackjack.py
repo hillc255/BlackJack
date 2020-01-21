@@ -189,22 +189,30 @@ class Dealer(object):
         self.dealCard(self.usedDeck)
         self.dealerHand()
 
+        print('------------------')
+
         for i in self.dealerCards[:1]:
             print(f'Dealer Card 1: {str(i)}')
         for j in self.dealerCards[1:2]:
             print(f'Dealer Card 2: {str(j)}')
-        print('Dealer card C: Blank')
+        print('Dealer Card 2: Blank')
 
-        print("\nDealer deals player 2 cards and displays both")
+        print('------------------')
+
+        print("Dealer deals player 2 cards and displays both")
         self.dealCard(self.usedDeck)
         self.playerHand()
         self.dealCard(self.usedDeck)
         self.playerHand()
-        for pcard in self.playerCards[:0]:
-            print(f'Player Card 1: {str(pcard)}')
-        for pcard2 in self.playerCards[:1]:
-            print(f'Player Card 2: {str(pcard2)}')
 
+        print('------------------')
+
+        for i in self.playerCards[:1]:
+            print(f'Player Card 1: {str(i)}')
+        for j in self.playerCards[1:2]:
+            print(f'Player Card 2: {str(j)}')
+
+        print('------------------')
 
 if __name__ == "__main__":
 
@@ -291,8 +299,8 @@ done 2.Shuffle the deck
 done 3.Ask the Player for their bet
 done 4.Make sure that the Player's bet does not exceed their available chips
 done 5.Deal two cards to the Dealer and two cards to the Player
-6.Show only one of the Dealer's cards, the other remains hidden
-7.Show both of the Player's cards
+done 6.Show only one of the Dealer's cards, the other remains hidden
+done 7.Show both of the Player's cards
 8.Ask the Player if they wish to Hit, and take another card
 9.If the Player's hand doesn't Bust (go over 21), ask if they'd like to Hit again.
 10.If a Player Stands, play the Dealer's hand. The dealer will always
