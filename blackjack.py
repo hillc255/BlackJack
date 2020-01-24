@@ -148,8 +148,11 @@ class Dealer(object):
         #return temp2
 
         print('\nReplace J,Q,K with 10')
+        print('Ask player if the Ace is equal to 1 or 11 points')
+        print('Change number strings to integers and sum cards')
+        print('Compare sum of hand to 21 points')
     '''
-   # def cardCount(self, temp2):
+    # def cardCount(self, temp2):
         #Replace JQK with 10
         temp3 = []
         temp3 = temp2
@@ -214,6 +217,28 @@ class Dealer(object):
 
         print('------------------')
 
+    def playerHit(self):
+         while True:
+            playerInput = input("Would the player like a hit? (y/n) ").lower()
+            if playerInput != 'y':
+                break
+            else:
+                '''remove card from deck'''
+                self.dealCard(self.usedDeck)
+                '''add card to player hand'''
+                self.playerHand()
+
+                print('------------------')
+                print('All player Cards: ')
+                temp3 = []
+                for i in self.playerCards:
+                    temp3.append(str(i))
+                print(", ".join(temp3))
+
+
+
+
+
 if __name__ == "__main__":
 
     print("Welcome to BlackJack!\n")
@@ -234,6 +259,9 @@ if __name__ == "__main__":
 
     #Deal cards for dealer and player
     my_dealer.setUpGame()
+
+    #Ask player if they want a hit
+    my_dealer.playerHit()
 
     # my_player.replay() #not quite working
 
