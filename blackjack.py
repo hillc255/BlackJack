@@ -136,32 +136,55 @@ class Dealer(object):
             res2.append(str(card2))
         return ", ".join(res2)
 
-    def cardRemoveSuit(self, playerCards):
-        '''Remove the suits from the list'''
-        temp = []
-        self.temp = self.playerCards
-        print('\nStripped out suits')
-        temp2 = []
-        for i in self.temp:
-            temp2.append((str(i)[ :-1]))
-        print(", ".join(temp2))
-        #return temp2
+    def cardSum(self, playerCards, dealerCards):
 
-        print('\nReplace J,Q,K with 10')
-        print('Ask player if the Ace is equal to 1 or 11 points')
-        print('Change number strings to integers and sum cards')
-        print('Compare sum of hand to 21 points')
-    '''
-    # def cardCount(self, temp2):
-        #Replace JQK with 10
-        temp3 = []
-        temp3 = temp2
-        temp4 = []
-        for j in temp3:
-            if j in ['J','Q','K']:
-                 temp4.append([j.replace(j, '10') for j in temp3[j]])
-        print(", ".join(temp4))
-    '''
+        def removeSuits(self, playerCards):
+            '''Remove the suits from the list'''
+            print('Begin removeSuits')
+            self.temp = playerCards
+            temp2 = []
+            for i in self.temp:
+                temp2.append((str(i)[ :-1]))
+            print(", ".join(temp2))
+            self.temp = temp2
+            print('Finished removeSuits')
+            return self.temp
+
+        def replaceJQKA(self, temp):
+            print('Begin replaceJQKA')
+            temp3 = []
+            temp3 = self.temp
+            temp4 = []
+            val = ""
+
+            if self.temp[-1] in ('A'):
+                print(f'Player has an {self.temp[-1]}')
+                val = input(f'Player, would you like {self.temp[-1]} to be 11 or 1? ')
+                while True:
+                    if val not in ['11', '1']:
+                        val = input(f'Invalid input. Player, would you like {self.temp[-1]} to be 11 or 1? ')
+                    else:
+                        print(f'else Ace = {self.temp[-1]} and value = {val}')
+                        break
+
+            for j in temp3:
+                #if val == "":
+                   # val = '0'
+                temp4.append(j.replace('J', '10').replace('Q','10').replace('K','10').replace('A',val))
+                #print(", ".join(temp4))
+                #temp5 = (", ".join(temp4))
+            #print('This is temp5 {temp5}')
+            total = []
+            print('Change number strings to integers and sum cards')
+            total = sum([int(i) for i in temp4 if type(i)== int or i.isdigit()])
+            print(f'Card count total = {total}\n')
+            return total
+
+       # aceCount(self, self.playerCards)
+        removeSuits(self, playerCards)
+        replaceJQKA(self, self.temp)
+        #print('Compare sum of hand to 21 points')
+
 
     def dealCard(self, usedDeck):
         self.item = self.usedDeck.pop(0)
@@ -215,7 +238,10 @@ class Dealer(object):
         for j in self.playerCards[1:2]:
             print(f'Player Card 2: {str(j)}')
 
+        self.cardSum(self.playerCards,self.dealerCards)
+
         print('------------------')
+
 
     def playerHit(self):
          while True:
@@ -234,6 +260,8 @@ class Dealer(object):
                 for i in self.playerCards:
                     temp3.append(str(i))
                 print(", ".join(temp3))
+                temp3 = self.playerCards
+                self.cardSum(self.playerCards,self.dealerCards)
 
 
 
@@ -260,8 +288,16 @@ if __name__ == "__main__":
     #Deal cards for dealer and player
     my_dealer.setUpGame()
 
+    #Sum of player's hand
+    #my_dealer.cardSum(my_dealer.playerCards, my_dealer.dealerCards)
+
+
     #Ask player if they want a hit
     my_dealer.playerHit()
+    #my_dealer.cardSum(my_dealer.playerCards)
+    #print('Player\'s cards total {cardSum.total}')
+
+    #Get sum player's hand
 
     # my_player.replay() #not quite working
 
@@ -313,7 +349,7 @@ if __name__ == "__main__":
      
     '''
     #strip suits from player's or dealer's hand
-    my_dealer.cardRemoveSuit(my_dealer.playerCards)
+    #my_dealer.cardRemoveSuit(my_dealer.playerCards)
 
     #replace J,Q, K by 10
     #my_dealer.cardCount(my_dealer.temp2)
