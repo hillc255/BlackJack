@@ -1,374 +1,227 @@
+# Blackjack solution provided by Professor in Udemy's Python Bootcamp course
+
+# IMPORT STATEMENTS AND VARIABLE DECLARATIONS:
+
 import random
-import string
 
-'''
-Title:        BlackJack Game
-# Date:       1/13/2020
-Author:       Claudia Hill
-Purpose:      Create BlackJack Game with Python
-              Milestone 2 - Udemy Python Bootcamp
-Description:  Original code in PyCharm IDE
-'''
+suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
+ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
+values = {'Two': 2, 'Three': 3, 'Four': 4, 'Five': 5, 'Six': 6, 'Seven': 7, 'Eight': 8,
+          'Nine': 9, 'Ten': 10, 'Jack': 10, 'Queen': 10, 'King': 10, 'Ace': 11}
 
-class Card(object):
+playing = True
 
-    suits = ["♠", "♣", "♥", "♦"]
-    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "A", "J", "Q", "K"]
 
-    def __init__(self, suits, ranks):
-        """Sets up individual card"""
-        self.suits = suits
-        self.ranks = ranks
+# CLASS DEFINTIONS:
+
+class Card:
+
+    def __init__(self, suit, rank):
+        self.suit = suit
+        self.rank = rank
 
     def __str__(self):
-        """Prints the individual card"""
-        return self.suits + self.ranks
+        return self.rank + ' of ' + self.suit
 
 
-class Deck(object):
+class Deck:
 
     def __init__(self):
-        """Calls populate method and shuffles deck."""
-        print("Card deck opened.")
-        self.cards = []
-
-    def populate(self):
-        """Populates the deck with cards"""
-        for rank in Card.ranks:
-            for suit in Card.suits:
-                self.cards.append(Card(rank,suit))
-        print('Dealer populated deck.')
+        self.deck = []  # start with an empty list
+        for suit in suits:
+            for rank in ranks:
+                self.deck.append(Card(suit, rank))
 
     def __str__(self):
-        """Converts location to string value"""
-        print('Deck of shuffled cards.')
-        res = []
-        for card in self.cards:
-            res.append(str(card))
-        return ", ".join(res)
+        deck_comp = ''  # start with an empty string
+        for card in self.deck:
+            deck_comp += '\n ' + card.__str__()  # add each Card object's print string
+        return 'The deck has:' + deck_comp
 
     def shuffle(self):
-        """Shuffles the cards in this deck."""
-        random.shuffle(self.cards)
-        print('Dealer shuffled deck.')
+        random.shuffle(self.deck)
+
+    def deal(self):
+        single_card = self.deck.pop()
+        return single_card
 
 
-class Player(object):
-
-    #chips = 0
-    #bet = 0
-    #game_on = True
+class Hand:
 
     def __init__(self):
-        """Tracks user bet binput and chips"""
-        self.game_on = True
-        self.chips = 0
+        self.cards = []  # start with an empty list as we did in the Deck class
+        self.value = 0  # start with zero value
+        self.aces = 0  # add an attribute to keep track of aces
+
+    def add_card(self, card):
+        self.cards.append(card)
+        self.value += values[card.rank]
+        if card.rank == 'Ace':
+            self.aces += 1  # add to self.aces
+
+    def adjust_for_ace(self):
+        while self.value > 21 and self.aces:
+            self.value -= 10
+            self.aces -= 1
+
+
+class Chips:
+
+    def __init__(self):
+        self.total = 100
         self.bet = 0
-        self.sum = 0
 
-    def playerBuysChips(self):
-        if self.game_on is True:
-            while True:
-                try:
-                    self.chips = int(input('Player, how many chips would you like to buy? '))
-                except ValueError:
-                    print("Invalid entry. Try again")
-                    continue
-                else:
-                    if self.chips == 0:
-                        print("Chip(s) purchased must be greater than 0.  Try again.")
-                        continue
-                break
-        return self.chips
+    def win_bet(self):
+        self.total += self.bet
 
-    def playerPlacesBet(self):
-        #successful chips purchased - ready to place bet
-        while not ((self.chips <= 0) & (self.game_on is True)):
-                while True:
-                    try:
-                        self.bet = int(input('Player, what\'s your bet? '))
-                    except ValueError:
-                        print("Invalid entry. Try again")
-                        continue
-                    else:
-                        if self.bet == 0:
-                            print("Bet must be greater than 0.  Try again.")
-                            continue
-                    break
-                    #successful bet entered - make sure there are chips
-                self.sum = self.chips - self.bet
-                if self.sum < 0:
-                    print('Invalid bet. Please try again.')
-                    self.sum == 0
-                else:
-                    self.chips = self.sum
-                    print(f'You bet {self.bet} with {self.chips} chip(s) remaining.')
-                    print('Let\'s play.')
-                    self.bet = 0
-                    self.game_on = False
-                    break
-        return
+    def lose_bet(self):
+        self.total -= self.bet
 
-    def replay(self):
-        self.replayGame = input('Do you want to play again? Enter Yes or No: ').lower().startswith('y')
-        if self.replayGame == 'y':
-            Player.playerBuysChips().game_on = True
-            Player.playerBuysChips(self)
+
+# FUNCTION DEFINITIONS:
+
+def take_bet(chips):
+    while True:
+        try:
+            chips.bet = int(input('How many chips would you like to bet? '))
+        except ValueError:
+            print('Sorry, a bet must be an integer!')
         else:
-            return
-
-
-
-class Dealer(object):
-
-    def __init__(self,cards):
-        '''Dealer deals a hand and counts total'''
-        self.playerCards = []
-        self.dealerCards = []
-        self.usedDeck = []
-        self.usedDeck = cards
-
-    def __str__(self):
-        '''Card removed from deck'''
-        print('Used deck')
-        res2 = []
-        for card2 in self.usedDeck:
-            res2.append(str(card2))
-        return ", ".join(res2)
-
-    def cardSum(self, playerCards, dealerCards):
-
-        def removeSuits(self, playerCards):
-            '''Remove the suits from the list'''
-            print('Begin removeSuits')
-            self.temp = playerCards
-            temp2 = []
-            for i in self.temp:
-                temp2.append((str(i)[ :-1]))
-            print(", ".join(temp2))
-            self.temp = temp2
-            print('Finished removeSuits')
-            return self.temp
-
-        def replaceJQKA(self, temp):
-            print('Begin replaceJQKA')
-            temp3 = []
-            temp3 = self.temp
-            temp4 = []
-            val = ""
-
-            if self.temp[-1] in ('A'):
-                print(f'Player has an {self.temp[-1]}')
-                val = input(f'Player, would you like {self.temp[-1]} to be 11 or 1? ')
-                while True:
-                    if val not in ['11', '1']:
-                        val = input(f'Invalid input. Player, would you like {self.temp[-1]} to be 11 or 1? ')
-                    else:
-                        print(f'else Ace = {self.temp[-1]} and value = {val}')
-                        break
-
-            for j in temp3:
-                #if val == "":
-                   # val = '0'
-                temp4.append(j.replace('J', '10').replace('Q','10').replace('K','10').replace('A',val))
-                #print(", ".join(temp4))
-                #temp5 = (", ".join(temp4))
-            #print('This is temp5 {temp5}')
-            total = []
-            print('Change number strings to integers and sum cards')
-            total = sum([int(i) for i in temp4 if type(i)== int or i.isdigit()])
-            print(f'Card count total = {total}\n')
-            return total
-
-       # aceCount(self, self.playerCards)
-        removeSuits(self, playerCards)
-        replaceJQKA(self, self.temp)
-        #print('Compare sum of hand to 21 points')
-
-
-    def dealCard(self, usedDeck):
-        self.item = self.usedDeck.pop(0)
-        print('Single card removed from deck')
-        print(str(self.item))
-        return self.item, self.usedDeck
-
-    def playerHand(self):
-        print("Player\'s hand: Add card and print")
-        self.playerCards.append(self.item)
-        pc = []
-        for pcard in self.playerCards:
-            pc.append(str(pcard))
-        print( ", ".join(pc))
-
-    def dealerHand(self):
-        print("Dealer\'s hand: Add card and print")
-        self.dealerCards.append(self.item)
-        dc = []
-        for dcard in self.dealerCards:
-            dc.append(str(dcard))
-        print(", ".join(dc))
-
-    def setUpGame(self):
-        print("\nDealer deals self 2 cards and displays 1")
-        self.dealCard(self.usedDeck)
-        self.dealerHand()
-        self.dealCard(self.usedDeck)
-        self.dealerHand()
-
-        print('------------------')
-
-        for i in self.dealerCards[:1]:
-            print(f'Dealer Card 1: {str(i)}')
-        for j in self.dealerCards[1:2]:
-            print(f'Dealer Card 2: {str(j)}')
-        print('Dealer Card 2: Blank')
-
-        print('------------------')
-
-        print("Dealer deals player 2 cards and displays both")
-        self.dealCard(self.usedDeck)
-        self.playerHand()
-        self.dealCard(self.usedDeck)
-        self.playerHand()
-
-        print('------------------')
-
-        for i in self.playerCards[:1]:
-            print(f'Player Card 1: {str(i)}')
-        for j in self.playerCards[1:2]:
-            print(f'Player Card 2: {str(j)}')
-
-        self.cardSum(self.playerCards,self.dealerCards)
-
-        print('------------------')
-
-
-    def playerHit(self):
-         while True:
-            playerInput = input("Would the player like a hit? (y/n) ").lower()
-            if playerInput != 'y':
-                break
+            if chips.bet > chips.total:
+                print("Sorry, your bet can't exceed", chips.total)
             else:
-                '''remove card from deck'''
-                self.dealCard(self.usedDeck)
-                '''add card to player hand'''
-                self.playerHand()
-
-                print('------------------')
-                print('All player Cards: ')
-                temp3 = []
-                for i in self.playerCards:
-                    temp3.append(str(i))
-                print(", ".join(temp3))
-                temp3 = self.playerCards
-                self.cardSum(self.playerCards,self.dealerCards)
+                break
 
 
+def hit(deck, hand):
+    hand.add_card(deck.deal())
+    hand.adjust_for_ace()
 
 
+def hit_or_stand(deck, hand):
+    global playing
 
-if __name__ == "__main__":
+    while True:
+        x = input("Would you like to Hit or Stand? Enter 'h' or 's' ")
 
-    print("Welcome to BlackJack!\n")
+        if x[0].lower() == 'h':
+            hit(deck, hand)  # hit() function defined above
 
-    #Objects being used
-    my_deck = Deck()
-    my_player = Player()
-    my_dealer = Dealer(my_deck.cards)
+        elif x[0].lower() == 's':
+            print("Player stands. Dealer is playing.")
+            playing = False
 
-    #Player buys chips and places bet
-    #my_player.playerBuysChips()
-    #my_player.playerPlacesBet()
-
-    #Preparing deck
-    my_deck.populate()
-    my_deck.shuffle()
-    print(my_deck)
-
-    #Deal cards for dealer and player
-    my_dealer.setUpGame()
-
-    #Sum of player's hand
-    #my_dealer.cardSum(my_dealer.playerCards, my_dealer.dealerCards)
+        else:
+            print("Sorry, please try again.")
+            continue
+        break
 
 
-    #Ask player if they want a hit
-    my_dealer.playerHit()
-    #my_dealer.cardSum(my_dealer.playerCards)
-    #print('Player\'s cards total {cardSum.total}')
-
-    #Get sum player's hand
-
-    # my_player.replay() #not quite working
-
-    #sum: print("The sum of values is {0}".format(sum(n)))
-
-    '''
-    #Remove a card from the deck with pop and print it
-    my_dealer.dealCard(my_deck.cards)
-    #Add item removed from deck to player's hand and print player's hand
-    my_dealer.playerHand()
-    #print remaining cards in deck
-    print(my_dealer)
-
-    #Remove a second card from the deck with pop and print it
-    my_dealer.dealCard(my_dealer.usedDeck)
-    #Add second item removed from deck to player's hand and print player's hand
-    my_dealer.playerHand()
-    #print remaining cards in deck
-    print(my_dealer)
-
-    #Remove a third card from the deck with pop and print it
-    my_dealer.dealCard(my_dealer.usedDeck)
-    #Add third item removed from deck to player's hand and print player's hand
-    my_dealer.playerHand()
-    #print remaining cards in deck
-    print(my_dealer)
-
-    #Remove a fourth card from the deck with pop and print it
-    my_dealer.dealCard(my_dealer.usedDeck)
-    #Add fourth removed from deck to player's hand and print player's hand
-    my_dealer.playerHand()
-    #print remaining cards in deck
-    print(my_dealer)
-    '''
-    '''
-    #Remove a third card from the deck with pop and print it
-    my_dealer.dealCard(my_dealer.usedDeck)
-    #Add third item removed from deck to dealer's hand and print dealer's hand
-    my_dealer.dealerHand()
-    #print remaining cards in deck
-    print(my_dealer)
-
-    #Remove a fourth card from the deck with pop and print it
-    my_dealer.dealCard(my_dealer.usedDeck)
-    #Add fourth item removed from deck to dealer's hand and print dealer's hand
-    my_dealer.dealerHand()
-    #print remaining cards in deck
-    print(my_dealer)
-     
-    '''
-    #strip suits from player's or dealer's hand
-    #my_dealer.cardRemoveSuit(my_dealer.playerCards)
-
-    #replace J,Q, K by 10
-    #my_dealer.cardCount(my_dealer.temp2)
-
-    print('\nGame over')
+def show_some(player, dealer):
+    print("\nDealer's Hand:")
+    print(" <card hidden>")
+    print('', dealer.cards[1])
+    print("\nPlayer's Hand:", *player.cards, sep='\n ')
 
 
-'''
-done 1.Create a deck of 52 cards
-done 2.Shuffle the deck
-done 3.Ask the Player for their bet
-done 4.Make sure that the Player's bet does not exceed their available chips
-done 5.Deal two cards to the Dealer and two cards to the Player
-done 6.Show only one of the Dealer's cards, the other remains hidden
-done 7.Show both of the Player's cards
-8.Ask the Player if they wish to Hit, and take another card
-9.If the Player's hand doesn't Bust (go over 21), ask if they'd like to Hit again.
-10.If a Player Stands, play the Dealer's hand. The dealer will always
-11.Hit until the Dealer's value meets or exceeds 17
-12.Determine the winner and adjust the Player's chips accordingly
-13.Ask the Player if they'd like to play again
-'''
+def show_all(player, dealer):
+    print("\nDealer's Hand:", *dealer.cards, sep='\n ')
+    print("Dealer's Hand =", dealer.value)
+    print("\nPlayer's Hand:", *player.cards, sep='\n ')
+    print("Player's Hand =", player.value)
+
+
+def player_busts(player, dealer, chips):
+    print("Player busts!")
+    chips.lose_bet()
+
+
+def player_wins(player, dealer, chips):
+    print("Player wins!")
+    chips.win_bet()
+
+
+def dealer_busts(player, dealer, chips):
+    print("Dealer busts!")
+    chips.win_bet()
+
+
+def dealer_wins(player, dealer, chips):
+    print("Dealer wins!")
+    chips.lose_bet()
+
+
+def push(player, dealer):
+    print("Dealer and Player tie! It's a push.")
+
+
+# GAMEPLAY!
+
+while True:
+    print('Welcome to BlackJack! Get as close to 21 as you can without going over!\n\
+    Dealer hits until she reaches 17. Aces count as 1 or 11.')
+
+    # Create & shuffle the deck, deal two cards to each player
+    deck = Deck()
+    deck.shuffle()
+
+    player_hand = Hand()
+    player_hand.add_card(deck.deal())
+    player_hand.add_card(deck.deal())
+
+    dealer_hand = Hand()
+    dealer_hand.add_card(deck.deal())
+    dealer_hand.add_card(deck.deal())
+
+    # Set up the Player's chips
+    player_chips = Chips()  # remember the default value is 100
+
+    # Prompt the Player for their bet:
+    take_bet(player_chips)
+
+    # Show the cards:
+    show_some(player_hand, dealer_hand)
+
+    while playing:  # recall this variable from our hit_or_stand function
+
+        # Prompt for Player to Hit or Stand
+        hit_or_stand(deck, player_hand)
+        show_some(player_hand, dealer_hand)
+
+        if player_hand.value > 21:
+            player_busts(player_hand, dealer_hand, player_chips)
+            break
+
+    # If Player hasn't busted, play Dealer's hand        
+    if player_hand.value <= 21:
+
+        while dealer_hand.value < 17:
+            hit(deck, dealer_hand)
+
+        # Show all cards
+        show_all(player_hand, dealer_hand)
+
+        # Test different winning scenarios
+        if dealer_hand.value > 21:
+            dealer_busts(player_hand, dealer_hand, player_chips)
+
+        elif dealer_hand.value > player_hand.value:
+            dealer_wins(player_hand, dealer_hand, player_chips)
+
+        elif dealer_hand.value < player_hand.value:
+            player_wins(player_hand, dealer_hand, player_chips)
+
+        else:
+            push(player_hand, dealer_hand)
+
+    # Inform Player of their chips total    
+    print("\nPlayer's winnings stand at", player_chips.total)
+
+    # Ask to play again
+    new_game = input("Would you like to play another hand? Enter 'y' or 'n' ")
+    if new_game[0].lower() == 'y':
+        playing = True
+        continue
+    else:
+        print("Thanks for playing!")
+        break
